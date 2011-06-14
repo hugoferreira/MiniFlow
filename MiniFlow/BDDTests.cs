@@ -2,6 +2,7 @@
 using System.Linq;
 using NBehave.Narrator.Framework;
 using NBehave.Spec.NUnit;
+using System;
 
 namespace MiniFlow {
     [ActionSteps]
@@ -104,21 +105,9 @@ namespace MiniFlow {
             this.transitionState = val;
         }
 
-        [Then("I should still be executing the process")]
-        [Then("the process is still executing")]
-        [Then("the process is not finished")]
-        public void CheckProcessIsRunning() {
-            this.SingleInstance.State.ShouldEqual(ExecutionState.Running);
-        }
-
-        [Then("the process is finished")]
-        public void CheckProcessIsFinished() {
-            this.SingleInstance.State.ShouldEqual(ExecutionState.Closed);
-        }
-
-        [Then("it is $state that the process is finished")]
-        public void CheckProcessIsFinished(bool state) {
-            (SingleInstance.State == ExecutionState.Closed).ShouldEqual(state);
+        [Then("the process is $state")]
+        public void CheckProcessIsFinished(string state) {
+            this.SingleInstance.State.ShouldEqual(Enum.Parse(typeof(ExecutionState), state, true));
         }
 
         [Then("current node is $id")]
