@@ -3,6 +3,7 @@ using System.Linq;
 using NBehave.Narrator.Framework;
 using NBehave.Spec.NUnit;
 using System;
+using System.Timers;
 
 namespace MiniFlow.Test {
     [ActionSteps]
@@ -39,18 +40,23 @@ namespace MiniFlow.Test {
         [Then("the current node is $id")]
         [Then("the current nodes are $ids")]
         public void CheckCurrentNode(string[] ids) {
-            var list = SingleInstance.Executions.Select(e => e.currentNode.Name.Substring(0, 1)).ToList();
+            var list = SingleInstance.Tokens.Select(e => e.currentNode.Name.Substring(0, 1)).ToList();
             foreach (var id in ids) list.ShouldContain(id);
         }
 
         [Then("there are $count executing processes")]
         public void CountExecutions(int count) {
-            this.SingleInstance.Executions.Count().ShouldEqual(count);
+            this.SingleInstance.Tokens.Count().ShouldEqual(count);
         }
 
         [Then("$count on hold")]
         public void CountExecutionsOnHold(int count) {
-            this.SingleInstance.Executions.Where(e => e.State == ExecutionState.Hold).Count().ShouldEqual(count);
+            this.SingleInstance.Tokens.Where(e => e.State == ExecutionState.Hold).Count().ShouldEqual(count);
+        }
+
+        [Then("I wait for $time seconds")]
+        public void WaitForTimer(int time) {
+            System.Threading.Thread.Sleep(1000 * time);            
         }
     }
 }

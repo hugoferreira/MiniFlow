@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 
 namespace MiniFlow {
     public class Node : IExecutable {
@@ -33,5 +34,19 @@ namespace MiniFlow {
 
     public class EndNode : Node {
         public EndNode(string name) : base(name) { }
+    }
+
+    public class TimerNode : Node {
+        public TimeSpan TimeSpan { get; private set; }
+        public Timer Timer { get; private set; }
+
+        public TimerNode(string name, TimeSpan time): base(name) {
+            this.TimeSpan = time;
+        }
+
+        public override IEnumerable<Token> Execute(Token exe) {
+            this.Timer = new Timer(TimeSpan.Milliseconds);
+            yield return exe;
+        }
     }
 }

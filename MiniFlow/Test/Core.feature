@@ -58,13 +58,13 @@ Scenario: Split Conditional Execution
  |    a|    3| 2, 3|
  |    b|    2|    4|
 
-Scenario: Tiver event in Sequence Flow
- Given a timer event scenario
+Scenario: Timer event in Sequence Flow
+ Given a [timer] seconds timer event scenario
  When I initialize the process
  And I execute 2 times
- And I set the timer for [timer] seconds
  And I wait for [wait] seconds
  Then the current node is [node]
+ And it is raining outside
 
  Examples:
  |timer|wait|node|

@@ -81,5 +81,15 @@ namespace MiniFlow.Test {
             this.process = new Process(startNode);
         }
 
+        [Given("a $val seconds timer event scenario")]
+        public void TimerEventScenario(int s) {
+            var startNode = new StartNode("1. Submit");
+            var n2 = new TimerNode("2. Wait 2 seconds", new TimeSpan(0, 0, s));
+            var endNode = new EndNode("3. Closed");
+            var t12 = new SequenceFlow(startNode, n2);
+            var t23 = new SequenceFlow(n2, endNode);
+
+            this.process = new Process(startNode);
+        }
     }
 }
