@@ -7,7 +7,7 @@ using System;
 namespace MiniFlow.Test {
     [ActionSteps]
     public partial class Core {        
-        private bool transitionState;
+        private string transitionState;
         private ProcessInstance SingleInstance { get { return this.process.Instances.First(); } }
 
         [When("I initialize the process")]
@@ -26,7 +26,7 @@ namespace MiniFlow.Test {
         }
          
         [When("I set the transition to $val")]
-        public void SetTransitionState(bool val) {
+        public void SetTransitionState(string val) {
             this.transitionState = val;
         }
 
@@ -50,7 +50,7 @@ namespace MiniFlow.Test {
 
         [Then("$count on hold")]
         public void CountExecutionsOnHold(int count) {
-            this.SingleInstance.Executions.Where(e => e.state == ExecutionState.Hold).Count().ShouldEqual(count);
+            this.SingleInstance.Executions.Where(e => e.State == ExecutionState.Hold).Count().ShouldEqual(count);
         }
     }
 }

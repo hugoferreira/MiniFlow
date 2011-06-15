@@ -21,11 +21,13 @@ Scenario: Exclusive Gateway
  And the process is [state]
 
  Examples:
- |times| transition|task|  state|
- |    2|       true|   2|running|
- |    2|      false|   3|running|
- |    3|       true|   4| closed|
- |    3|      false|   4| closed|
+ |times|transition|task|  state|
+ |    2|         a|   2|running|
+ |    2|         b|   3|running|
+ |    2|         c|   D|running|
+ |    3|         a|   4| closed|
+ |    3|         b|   4| closed|
+ |    3|         c|   4| closed|
 
 Scenario: Parallel Execution
  Given a paralel gateway scenario
@@ -53,8 +55,8 @@ Scenario: Split Conditional Execution
 
  Examples:
  |state|count|nodes|
- | true|    3| 2, 3|
- |false|    2|    4|
+ |    a|    3| 2, 3|
+ |    b|    2|    4|
 
 Scenario: Tiver event in Sequence Flow
  Given a timer event scenario

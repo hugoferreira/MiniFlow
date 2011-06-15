@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Execution.cs" />
+    <Compile Include="Gateways.cs" />
     <Compile Include="Misc.cs" />
     <Compile Include="Nodes.cs" />
     <Compile Include="Process.cs" />
@@ -67,7 +68,7 @@
     <Compile Include="Transitions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Core.feature" />
+    <None Include="Test\Core.feature" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -2,6 +2,6 @@
 
 namespace MiniFlow {
     public interface IExecutable {
-        IEnumerable<Execution> Execute(Execution exe);
+        IEnumerable<Token> Execute(Token exe);
     }
 }
