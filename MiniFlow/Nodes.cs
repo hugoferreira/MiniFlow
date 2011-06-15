@@ -4,23 +4,27 @@ using System.Linq;
 
 namespace MiniFlow {
     public class Node : IExecutable {
-        public List<Transition> Arriving { get; private set; }
-        public List<Transition> Leaving { get; private set; }
+        public List<Transition> Incoming { get; private set; }
+        public List<Transition> Outgoing { get; private set; }
         public string Name { get; private set; }
 
         public Node(string name) {
-            this.Arriving = new List<Transition>();
-            this.Leaving = new List<Transition>();
+            this.Incoming = new List<Transition>();
+            this.Outgoing = new List<Transition>();
             this.Name = name;
         }
 
         public virtual IEnumerable<Execution> Execute(Execution exe) {
             if (exe.parentExecution != null) Console.Write(" ");
             Console.WriteLine("[" + exe.id + "] Leaving " + this.Name);
-            var t = this.Leaving.FirstOrDefault();
+            var t = this.Outgoing.FirstOrDefault();
             if (t != null) return t.Execute(exe).ToList();
             return Enumerable.Empty<Execution>();
         }
+    }
+
+    public class Activity : Node {
+        public Activity(string name) : base(name) { }
     }
 
     public class StartNode : Node {
@@ -31,11 +35,11 @@ namespace MiniFlow {
         public EndNode(string name) : base(name) { }
     }
 
-    public class SplitGateway : Node {
-        public SplitGateway(string name) : base(name) { }
+    public class ParallelGateway : Node {
+        public ParallelGateway(string name) : base(name) { }
 
         public override IEnumerable<Execution> Execute(Execution exe) {
-            foreach (var e in Leaving.SelectMany(t => t.Execute(exe.Spawn())))
+            foreach (var e in Outgoing.SelectMany(t => t.Execute(exe.Spawn())))
                 yield return e;
             yield return exe;
         }
@@ -61,7 +65,7 @@ namespace MiniFlow {
 
         public override IEnumerable<Execution> Execute(Execution exe) {
             var result = EvaluationExpression(exe);
-            foreach (var t in Leaving.Cast<Transition<T>>()) {
+            foreach (var t in Outgoing.Cast<Transition<T>>()) {
                 if (t.Condition.Equals(result)) return t.Execute(exe);
             }
 
@@ -75,7 +79,7 @@ namespace MiniFlow {
         public override IEnumerable<Execution> Execute(Execution exe) {
             var result = EvaluationExpression(exe);
             var exes = new List<Execution> { exe };
-            exes.AddRange(Leaving.Cast<Transition<T>>()
+            exes.AddRange(Outgoing.Cast<Transition<T>>()
                             .Where(t => t.Condition.Equals(result))
                             .SelectMany(e => e.Execute(exe.Spawn())));            
 

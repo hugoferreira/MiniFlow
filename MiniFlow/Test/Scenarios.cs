@@ -4,17 +4,14 @@ using NBehave.Narrator.Framework;
 using NBehave.Spec.NUnit;
 using System;
 
-namespace MiniFlow {
-    [ActionSteps]
-    public class Core {
+namespace MiniFlow.Test {
+    public partial class Core {
         private Process process;
-        private bool transitionState;
-
         [Given("I have a simple process")]
         [Given("a simple process")]
         public void SimpleProcess() {
             var startNode = new StartNode("1. Submit claim");
-            var n2 = new Node("2. Middle");
+            var n2 = new Activity("2. Middle");
             var endNode = new EndNode("3. Closed");
             var t12 = new Transition(startNode, n2);
             var t23 = new Transition(n2, endNode);
@@ -27,8 +24,8 @@ namespace MiniFlow {
         public void XorGwProcess() {
             var startNode = new StartNode("1. Submit claim");
             var xorGw = new ExclusiveGateway<bool>("X. Decide", (e => transitionState));
-            var n2 = new Node("2. Alternative A");
-            var n3 = new Node("3. Alternative B");
+            var n2 = new Activity("2. Alternative A");
+            var n3 = new Activity("3. Alternative B");
             var endNode = new EndNode("4. Closed");
 
             var t1gw = new Transition(startNode, xorGw);
@@ -43,9 +40,9 @@ namespace MiniFlow {
         [Given("a paralel gateway scenario")]
         public void SplitGwProcess() {
             var startNode = new StartNode("1. Submit claim");
-            var xorGw = new SplitGateway("X. Split");
-            var n2 = new Node("2. Child A");
-            var n3 = new Node("3. Child B");
+            var xorGw = new ParallelGateway("X. Split");
+            var n2 = new Activity("2. Child A");
+            var n3 = new Activity("3. Child B");
             var joinGw = new JoinGateway("X. Join");
             var endNode = new EndNode("4. Closed");
 
@@ -63,9 +60,9 @@ namespace MiniFlow {
         public void SplitConditionalProcess() {
             var startNode = new StartNode("1. Submit claim");
             var xorGw = new SplitConditionalGateway<bool>("X. Split", (e => transitionState));
-            var n2 = new Node("2. Child A");
-            var n3 = new Node("3. Child B");
-            var n4 = new Node("4. Child C");
+            var n2 = new Activity("2. Child A");
+            var n3 = new Activity("3. Child B");
+            var n4 = new Activity("4. Child C");
             var joinGw = new JoinGateway("X. Join");
             var endNode = new EndNode("5. Closed");
 
@@ -81,57 +78,5 @@ namespace MiniFlow {
             this.process = new Process(startNode);
         }
 
-        private ProcessInstance SingleInstance { get { return this.process.Instances.First(); } }
-
-        [When("I initialize the process")]
-        [When("I start the process")]
-        public void InitializeProcess() {
-            this.process.Create();
-        }
-
-        [When("I execute the current task")]
-        [When("I execute again")]
-        public void ExecuteTask() {
-            this.SingleInstance.Execute();
-        }
-
-        [When("I execute $times times")]
-        public void ExecuteTask(int times) {
-            for(int i = 0; i < times; i++) this.SingleInstance.Execute();
-        }
-         
-        [When("I set the transition to $val")]
-        public void SetTransitionState(bool val) {
-            this.transitionState = val;
-        }
-
-        [Then("the process is $state")]
-        public void CheckProcessIsFinished(string state) {
-            this.SingleInstance.State.ShouldEqual(Enum.Parse(typeof(ExecutionState), state, true));
-        }
-
-        [Then("current node is $id")]
-        [Then("the current node is $id")]
-        public void CheckCurrentNode(string id) {
-            foreach (var e in SingleInstance.Executions) 
-                e.currentNode.Name.ShouldStartWith(id);            
-        }
-
-        [Then("current node is $id")]
-        [Then("the current nodes are $ids")]
-        public void CheckCurrentNode(string[] ids) {
-            var list = SingleInstance.Executions.Select(e => e.currentNode.Name.Substring(0, 1)).ToList();
-            foreach (var id in ids) list.ShouldContain(id);
-        }
-
-        [Then("there are $count executing processes")]
-        public void CountExecutions(int count) {
-            this.SingleInstance.Executions.Count().ShouldEqual(count);
-        }
-
-        [Then("$count on hold")]
-        public void CountExecutionsOnHold(int count) {
-            this.SingleInstance.Executions.Where(e => e.state == ExecutionState.Hold).Count().ShouldEqual(count);
-        }
     }
 }

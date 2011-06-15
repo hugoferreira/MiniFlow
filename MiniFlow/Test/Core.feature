@@ -55,3 +55,16 @@ Scenario: Split Conditional Execution
  |state|count|nodes|
  | true|    3| 2, 3|
  |false|    2|    4|
+
+Scenario: Tiver event in Sequence Flow
+ Given a timer event scenario
+ When I initialize the process
+ And I execute 2 times
+ And I set the timer for [timer] seconds
+ And I wait for [wait] seconds
+ Then the current node is [node]
+
+ Examples:
+ |timer|wait|node|
+ |    2|   3|   3|
+ |   10|   1|   2|

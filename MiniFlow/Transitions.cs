@@ -9,8 +9,8 @@ namespace MiniFlow {
             this.Source = src;
             this.Target = tgt;
 
-            this.Source.Leaving.Add(this);
-            this.Target.Arriving.Add(this);
+            this.Source.Outgoing.Add(this);
+            this.Target.Incoming.Add(this);
         }
 
         public virtual IEnumerable<Execution> Execute(Execution exe) {
@@ -22,8 +22,7 @@ namespace MiniFlow {
     public class Transition<T> : Transition {
         public T Condition { get; private set; }
 
-        public Transition(Node src, Node tgt, T condition)
-            : base(src, tgt) {
+        public Transition(Node src, Node tgt, T condition): base(src, tgt) {
             this.Condition = condition;
         }
     }

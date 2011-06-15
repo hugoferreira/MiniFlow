@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MiniFlow.Test;
 
 namespace MiniFlow {    
     class Program {        
@@ -10,7 +11,7 @@ namespace MiniFlow {
             t.SimpleProcess();
             t.InitializeProcess();
             t.ExecuteTask();
-            t.CheckProcessIsFinished("running");
+            t.CheckProcessState("running");
 
             Console.ReadLine();
         }
