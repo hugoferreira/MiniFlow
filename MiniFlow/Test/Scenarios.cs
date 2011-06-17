@@ -81,6 +81,23 @@ namespace MiniFlow.Test {
             this.process = new Process(startNode);
         }
 
+        [Given("a task with two outgoing connections")]
+        public void ImplicitGatewayProcess() {
+            var startNode = new StartNode("0. Start");
+            var n1 = new Activity("1. Submit claim");
+            var n2 = new Activity("2. Child A");
+            var n3 = new Activity("3. Child B");
+            var endNode = new EndNode("4. Closed");
+
+            var ts1 = new SequenceFlow(startNode, n1);
+            var t12 = new SequenceFlow(n1, n2);
+            var t13 = new SequenceFlow(n1, n3);
+            var t2e = new SequenceFlow(n2, endNode);
+            var t3e = new SequenceFlow(n3, endNode);
+
+            this.process = new Process(startNode);
+        }
+
         [Given("a $val seconds timer event scenario")]
         public void TimerEventScenario(int s) {
             var startNode = new StartNode("1. Submit");

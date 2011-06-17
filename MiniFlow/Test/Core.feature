@@ -58,6 +58,12 @@ Scenario: Split Conditional Execution
  |    a|    3| 2, 3|
  |    b|    2|    4|
 
+Scenario: Implicit Parallel Execution
+ Given a task with two outgoing connections
+ When I initialize the process
+ And I execute 2 times
+ Then there are 3 executing processes
+
 Scenario: Timer event in Sequence Flow
  Given a [timer] seconds timer event scenario
  When I initialize the process

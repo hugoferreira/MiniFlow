@@ -26,6 +26,14 @@ namespace MiniFlow {
 
     public class Activity : Node {
         public Activity(string name) : base(name) { }
+
+        public override IEnumerable<Token> Execute(Token exe) {
+            if (Outgoing.Count() == 1) return base.Execute(exe);
+
+            var p = new ParallelGateway("<Implicit>");
+            p.Outgoing.AddRange(this.Outgoing);
+            return p.Execute(exe);            
+        }
     }
 
     public class StartNode : Node {
